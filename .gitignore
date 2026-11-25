@@ -1,0 +1,76 @@
+# ============================================================
+# Past, Future — Unity 6.3 LTS (.gitignore 초안)
+# 근거: Handover v0.3 14.2 / 16-18 (Library/Temp/Obj/Builds/Logs/
+#       UserSettings/TestResults/실제 save/secret 제외, 테스트 fixture는 제외하지 않음)
+# ============================================================
+
+# --- Unity 재생성 폴더 (프로젝트 루트 기준) ---
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# Asset Store tools 생성물
+/[Aa]ssets/AssetStoreTools*
+
+# Addressables 빌드 캐시 (설정 .asset 은 커밋 대상)
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+/[Aa]ssets/StreamingAssets/aa.meta
+/[Aa]ssets/StreamingAssets/aa/*
+
+# --- IDE / 생성되는 솔루션 파일 ---
+.vs/
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.csproj
+*.unityproj
+*.sln
+*.slnx
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# --- Unity 크래시/빌드 부산물 ---
+sysinfo.txt
+crashlytics-build.properties
+*.apk
+*.aab
+*.unitypackage
+*_BurstDebugInformation_DoNotShip/
+*_BackUpThisFolder_ButDontShipItWithYourGame/
+
+# --- 테스트 결과 / 로컬 실행 산출물 ---
+/TestResults/
+/[Tt]est[Rr]esults*/
+*.trx
+
+# --- 실제 사용자 저장 데이터 / 비밀 정보 (테스트 fixture는 TestData/ 에 두고 커밋) ---
+/LocalSaves/
+*.secret
+*.env
+.env.*
+!.env.example
+
+# --- OS ---
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,94 @@
+# ============================================================
+# Past, Future — .gitattributes 초안
+# 근거: Handover v0.3 14.2 (일반 Git: .cs/.unity/.prefab/텍스트 .asset/.json/.md/
+#       Packages/ProjectSettings/.meta, LFS: 대형 바이너리 선택 적용)
+# ============================================================
+
+# 기본: 텍스트 자동 감지 + 저장소 내부 LF 정규화
+* text=auto
+
+# --- 코드 / 문서 / 설정 (일반 Git) ---
+*.cs        text diff=csharp
+*.asmdef    text
+*.asmref    text
+*.json      text
+*.md        text
+*.txt       text
+*.xml       text
+*.yml       text
+*.yaml      text
+*.shader    text
+*.hlsl      text
+*.cginc     text
+*.compute   text
+*.uss       text
+*.uxml      text
+*.inputactions text
+
+# --- Unity YAML (Force Text 직렬화, 일반 Git) ---
+# UnityYAMLMerge(smart merge) 드라이버 연결은 별도 결정 사항 (git config 필요)
+*.unity     text
+*.prefab    text
+*.asset     text
+*.mat       text
+*.anim      text
+*.controller text
+*.overrideController text
+*.mask      text
+*.physicMaterial text
+*.physicsMaterial2D text
+*.playable  text
+*.signal    text
+*.preset    text
+*.lighting  text
+*.meta      text
+
+# Force Text 로도 바이너리로 저장되는 Unity 데이터
+LightingData.asset filter=lfs diff=lfs merge=lfs -text
+*.terrainlayer text
+
+# --- Git LFS: 3D 모델 ---
+*.fbx   filter=lfs diff=lfs merge=lfs -text
+*.FBX   filter=lfs diff=lfs merge=lfs -text
+*.obj   filter=lfs diff=lfs merge=lfs -text
+*.glb   filter=lfs diff=lfs merge=lfs -text
+*.blend filter=lfs diff=lfs merge=lfs -text
+*.max   filter=lfs diff=lfs merge=lfs -text
+*.ma    filter=lfs diff=lfs merge=lfs -text
+*.mb    filter=lfs diff=lfs merge=lfs -text
+*.3ds   filter=lfs diff=lfs merge=lfs -text
+*.dae   filter=lfs diff=lfs merge=lfs -text
+
+# --- Git LFS: 텍스처 / 이미지 원본 ---
+*.psd   filter=lfs diff=lfs merge=lfs -text
+*.psb   filter=lfs diff=lfs merge=lfs -text
+*.exr   filter=lfs diff=lfs merge=lfs -text
+*.hdr   filter=lfs diff=lfs merge=lfs -text
+*.tga   filter=lfs diff=lfs merge=lfs -text
+*.tif   filter=lfs diff=lfs merge=lfs -text
+*.tiff  filter=lfs diff=lfs merge=lfs -text
+*.png   filter=lfs diff=lfs merge=lfs -text
+*.jpg   filter=lfs diff=lfs merge=lfs -text
+*.jpeg  filter=lfs diff=lfs merge=lfs -text
+
+# --- Git LFS: 오디오 ---
+*.wav   filter=lfs diff=lfs merge=lfs -text
+*.aif   filter=lfs diff=lfs merge=lfs -text
+*.aiff  filter=lfs diff=lfs merge=lfs -text
+*.ogg   filter=lfs diff=lfs merge=lfs -text
+*.mp3   filter=lfs diff=lfs merge=lfs -text
+*.flac  filter=lfs diff=lfs merge=lfs -text
+
+# --- Git LFS: 영상 ---
+*.mp4   filter=lfs diff=lfs merge=lfs -text
+*.mov   filter=lfs diff=lfs merge=lfs -text
+*.webm  filter=lfs diff=lfs merge=lfs -text
+
+# --- Git LFS: 폰트 / 기타 바이너리 ---
+*.ttf   filter=lfs diff=lfs merge=lfs -text
+*.otf   filter=lfs diff=lfs merge=lfs -text
+*.zip   filter=lfs diff=lfs merge=lfs -text
+*.7z    filter=lfs diff=lfs merge=lfs -text
+*.dll   filter=lfs diff=lfs merge=lfs -text
+*.so    filter=lfs diff=lfs merge=lfs -text
+*.dylib filter=lfs diff=lfs merge=lfs -text
