@@ -62,6 +62,13 @@ var path = Application.persistentDataPath;                // X (컴파일 오류
 
 - 결과는 `TestResults/`에 남고 Git에서 제외된다. 보고할 때는 XML의 total/passed/failed와 exit code를 함께 적는다.
 - PlayMode 테스트 어셈블리는 M1에서 만든다 (ADR-565).
+- 순수 .NET headless 실행 (Unity Editor가 열려 있어도 된다. SDK는 `Tools/Headless/global.json`이 10.0.x로 고정, ADR-570):
+
+```bash
+dotnet test /Users/yujin/Projects/PastFuture/Tools/Headless/PastFuture.Tests.Headless/PastFuture.Tests.Headless.csproj
+```
+
+- headless 프로젝트는 Domain/Application의 Unity 소스를 그대로 컴파일한다. 소스를 복사하지 않는다. 엔진 무관 asmdef를 새로 만들면 대응하는 `Tools/Headless/*.Headless.csproj`도 같은 변경에서 추가한다.
 
 ## 6. Git
 

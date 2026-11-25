@@ -38,4 +38,10 @@ EditMode 테스트 (Unity Editor가 이 프로젝트를 열고 있으면 먼저 
 "/Applications/Unity/Hub/Editor/6000.3.29f1/Unity.app/Contents/MacOS/Unity" -batchmode -nographics -projectPath /Users/yujin/Projects/PastFuture -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile TestResults/editmode.log
 ```
 
+순수 .NET headless smoke (Editor를 닫지 않아도 됨, ADR-570):
+
+```bash
+dotnet test /Users/yujin/Projects/PastFuture/Tools/Headless/PastFuture.Tests.Headless/PastFuture.Tests.Headless.csproj
+```
+
 Editor가 열려 있을 때 새 파일을 반영하려면 Unity 창을 활성화하거나 `Cmd+R`. 컴파일 결과는 `~/Library/Logs/Unity/Editor.log`.

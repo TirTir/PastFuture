@@ -29,7 +29,7 @@
 | private Git + LFS, 첫 commit/clone | 완료 | 커밋 1237ee3 push, 새 clone에서 HEAD·파일 63개·LFS 파일 sha256 일치 |
 | asmdef, Domain UnityEngine 분리 | 완료 | 커밋 af4dd26, ADR-563/568 |
 | EditMode smoke | 완료 | 2026-11-25 batchmode EditMode 5/5 Passed, exit 0 (커밋 af4dd26). 최근 실행 14/14 Passed (3절) |
-| 순수 C# smoke | 해석 확인 필요 | 엔진 참조가 없는 어셈블리를 EditMode에서 검증하는 것으로 대신함. `dotnet test` headless는 NotRun (.NET SDK는 설치됨, 테스트 프로젝트 없음) |
+| 순수 C# smoke | 완료 | 커밋 a450feb, ADR-570. `Tools/Headless`에서 Domain/Application 소스를 Unity 없이 `netstandard2.1`로 빌드, `dotnet test` 2/2 Passed (SDK 10.0.404), 음성 확인(UnityEngine 사용 시 빌드 실패) |
 | docs | 완료 | 커밋 5458754: Handover.md 원본 사본, 이 문서, DevelopmentRules.md, ADR/, CLAUDE.md, README.md |
 | 최소 씬, Manual DI (Handover 4.1-3) | 완료 | 커밋 a73aa29, ADR-569. Bootstrap 씬(Build 0번), `GameBootstrapper`, `CompositionRoot`, `LifetimeScope`. EditMode 14/14 Passed, Editor 수동 Play/Stop 2회 로그 확인. UNITY_T003/T008은 NotRun (M1 PlayMode) |
 | Windows 경로 확인 | 미착수 | Windows Build Support 미설치, 검증 장비 미확인 |
@@ -52,12 +52,15 @@
 | Handover ID 없음 | `LifetimeScope_RegisterNull_Throws` | Passed | 2026-11-25 | a73aa29 |
 | Handover ID 없음 | `LifetimeScope_ThrowingItem_StillDisposesOthers_AndAggregatesErrors` | Passed | 2026-11-25 | a73aa29 |
 | Handover ID 없음 | `CompositionRoot_CreatesApplicationScope_AndDisposesIt` | Passed | 2026-11-25 | a73aa29 |
+| Handover ID 없음 (headless) | `EngineFreeAssemblies_LoadWithoutUnity_AndReferenceNoUnityAssembly` | Passed | 2026-11-25 | a450feb |
+| Handover ID 없음 (headless) | `LifetimeScope_RunsHeadless_DisposesChildThenItemsAndCancels` | Passed | 2026-11-25 | a450feb |
 | UNITY_T003 | Bootstrap → 서비스 한 번만 생성 | NotRun | - | - |
 | UNITY_T008 | Editor PlayMode 반복 → static 혼입 없음 | NotRun | - | - |
 
 - 실행 명령은 [DevelopmentRules.md](DevelopmentRules.md) 5절. 결과 파일 `TestResults/editmode.xml`은 Git에서 제외된다.
 - 위반을 일부러 넣은 실행(Presentation→Infrastructure, Application 엔진 참조 허용)에서 `FollowLayerRules`, `HasNoEngineReferencesFlag`가 Failed. 되돌린 뒤 5/5 Passed.
 - `HaveNoCycles`의 실패 사례는 실행하지 못했다 (Unity가 순환 asmdef를 컴파일 단계에서 거부).
+- headless: 2026-11-25 `dotnet test` ([DevelopmentRules.md](DevelopmentRules.md) 5절) 2/2 Passed, exit 0, 빌드 경고 0건.
 - 최근 실행: 2026-11-25 batchmode EditMode 14/14 Passed, exit 0, 컴파일 경고·오류 0건 (Build 씬 목록 변경 뒤 재실행).
 - UNITY_T003/T008: 2026-11-25 Editor 수동 Play/Stop 2회에서 `Composition root created`/`Application scope disposed` 로그가 짝지어 나오고 예외가 없었다. 수동 확인이라 Passed로 적지 않는다. PlayMode 자동 테스트는 M1 (ADR-565).
 - 위 표에 없는 Handover의 모든 Test ID는 NotRun이다.
@@ -71,15 +74,17 @@
 | af4dd26 | 계층별 asmdef 골격과 경계 테스트 (ADR-563, ADR-568) |
 | 5458754 | Handover 원본 사본, 개발 규칙, 현황, ADR-563~568 |
 | a73aa29 | Bootstrap 씬, LifetimeScope, CompositionRoot, Build 씬 목록 스크립트 (ADR-569) |
+| 7284c85 | ADR-569, Manual DI 규칙, M0 현황 |
+| ccd2f5a | VS Code 작업 공간 설정, IDE/.NET SDK 기록 |
+| a450feb | 순수 .NET headless smoke (ADR-570) |
 
 ## 5. 이번 단계에서 정한 사항
 
-ADR-563~569 ([ADR/README.md](ADR/README.md)).
+ADR-563~570 ([ADR/README.md](ADR/README.md)).
 
 ## 6. 미결정 / 다음 작업
 
-- M0 남은 작업: Windows Build Support 설치와 Windows 경로 확인, "순수 C# smoke" 해석 확인
-- headless 테스트 프로젝트를 만들 경우 `global.json`으로 SDK 10을 고정할지 미정
+- M0 남은 작업: Windows Build Support 설치와 Windows 경로 확인
 - `dotnet build PastFuture.Tests.EditMode.csproj`(2026-11-25)에서 CS0649 경고 1건: `AssemblyBoundaryTests.AsmdefData.noEngineReferences` (JsonUtility가 채우는 필드). Unity 컴파일에서는 경고 0건. 수정하지 않음
 - Bootstrap이 아닌 씬에서 Editor Play할 때 Bootstrap 자동 로드 여부 미정 (ADR-569)
 - `Assets/Scenes/SampleScene.unity`는 Build 목록에서만 빠졌고 파일은 남아 있다. 삭제 여부 미정 (ADR-567)
