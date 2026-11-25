@@ -16,7 +16,8 @@
 | 프로젝트 설정 | Force Text, Visible Meta Files, Input System only, Linear, API .NET Standard 2.1 |
 | Git | 2.50.1 (Apple), Git LFS 3.8.1 (Homebrew) |
 | 원격 | GitHub private `TirTir/PastFuture`, 브랜치 `main` |
-| IDE / .NET SDK | 미설치, 선택 미정 |
+| IDE | Visual Studio Code 1.147.0 (Homebrew cask), 확장 Unity `visualstudiotoolsforunity.vstuc` 1.3.2, C# Dev Kit 3.40.215, C# 2.160.4. Unity External Script Editor = VS Code (2026-11-25 사용자 선택) |
+| .NET SDK | 10.0.404 (LTS, 사용자 선택)와 11.0.100 (Homebrew `dotnet-sdk@10`이 `dotnet-sdk`에 의존해 함께 설치). 기본 `dotnet`은 11.0.100. Unity 컴파일에는 쓰이지 않음 |
 | Windows 검증 장비 | 미확인 |
 
 ## 2. M0 완료 기준 (Handover 4절)
@@ -28,7 +29,7 @@
 | private Git + LFS, 첫 commit/clone | 완료 | 커밋 1237ee3 push, 새 clone에서 HEAD·파일 63개·LFS 파일 sha256 일치 |
 | asmdef, Domain UnityEngine 분리 | 완료 | 커밋 af4dd26, ADR-563/568 |
 | EditMode smoke | 완료 | 2026-11-25 batchmode EditMode 5/5 Passed, exit 0 (커밋 af4dd26). 최근 실행 14/14 Passed (3절) |
-| 순수 C# smoke | 해석 확인 필요 | 엔진 참조가 없는 어셈블리를 EditMode에서 검증하는 것으로 대신함. `dotnet test` headless는 NotRun (.NET SDK 미설치) |
+| 순수 C# smoke | 해석 확인 필요 | 엔진 참조가 없는 어셈블리를 EditMode에서 검증하는 것으로 대신함. `dotnet test` headless는 NotRun (.NET SDK는 설치됨, 테스트 프로젝트 없음) |
 | docs | 완료 | 커밋 5458754: Handover.md 원본 사본, 이 문서, DevelopmentRules.md, ADR/, CLAUDE.md, README.md |
 | 최소 씬, Manual DI (Handover 4.1-3) | 완료 | 커밋 a73aa29, ADR-569. Bootstrap 씬(Build 0번), `GameBootstrapper`, `CompositionRoot`, `LifetimeScope`. EditMode 14/14 Passed, Editor 수동 Play/Stop 2회 로그 확인. UNITY_T003/T008은 NotRun (M1 PlayMode) |
 | Windows 경로 확인 | 미착수 | Windows Build Support 미설치, 검증 장비 미확인 |
@@ -77,7 +78,9 @@ ADR-563~569 ([ADR/README.md](ADR/README.md)).
 
 ## 6. 미결정 / 다음 작업
 
-- M0 남은 작업: Windows Build Support 설치와 Windows 경로 확인, IDE 선택, "순수 C# smoke" 해석 확인
+- M0 남은 작업: Windows Build Support 설치와 Windows 경로 확인, "순수 C# smoke" 해석 확인
+- headless 테스트 프로젝트를 만들 경우 `global.json`으로 SDK 10을 고정할지 미정
+- `dotnet build PastFuture.Tests.EditMode.csproj`(2026-11-25)에서 CS0649 경고 1건: `AssemblyBoundaryTests.AsmdefData.noEngineReferences` (JsonUtility가 채우는 필드). Unity 컴파일에서는 경고 0건. 수정하지 않음
 - Bootstrap이 아닌 씬에서 Editor Play할 때 Bootstrap 자동 로드 여부 미정 (ADR-569)
 - `Assets/Scenes/SampleScene.unity`는 Build 목록에서만 빠졌고 파일은 남아 있다. 삭제 여부 미정 (ADR-567)
 - `productName`(`pastfuture`), `companyName`(`DefaultCompany`) 최종 이름 미정
