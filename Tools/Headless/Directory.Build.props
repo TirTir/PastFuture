@@ -1,0 +1,15 @@
+<Project>
+  <!--
+    Pure .NET headless build of the engine-free assemblies (Handover 16-18, ADR-570).
+    Applies only to projects under Tools/Headless; the Unity-generated csproj files in the
+    repository root are not below this folder and are not affected.
+  -->
+  <PropertyGroup>
+    <!-- Same language version as Unity 6.3 (C# 9). -->
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+    <UnityScriptsRoot>$(MSBuildThisFileDirectory)../../Assets/PastFuture/Scripts/</UnityScriptsRoot>
+  </PropertyGroup>
+</Project>

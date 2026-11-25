@@ -48,6 +48,11 @@
 *.pdb.meta
 *.mdb.meta
 
+# --- 순수 .NET headless 프로젝트 (ADR-570): csproj는 직접 작성하므로 추적, 빌드 산출물은 제외 ---
+!/Tools/Headless/**/*.csproj
+/Tools/Headless/**/bin/
+/Tools/Headless/**/obj/
+
 # --- Unity 크래시/빌드 부산물 ---
 sysinfo.txt
 crashlytics-build.properties

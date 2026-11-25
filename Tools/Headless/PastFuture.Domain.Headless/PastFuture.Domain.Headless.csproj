@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Compiles the Unity PastFuture.Domain sources unchanged, with no Unity references. -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>PastFuture.Domain</AssemblyName>
+    <RootNamespace>PastFuture.Domain</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(UnityScriptsRoot)Domain/**/*.cs" />
+  </ItemGroup>
+</Project>

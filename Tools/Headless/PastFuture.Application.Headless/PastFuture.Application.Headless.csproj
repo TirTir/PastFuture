@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Compiles the Unity PastFuture.Application sources unchanged; references only Domain (same as the asmdef). -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>PastFuture.Application</AssemblyName>
+    <RootNamespace>PastFuture.Application</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(UnityScriptsRoot)Application/**/*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../PastFuture.Domain.Headless/PastFuture.Domain.Headless.csproj" />
+  </ItemGroup>
+</Project>
