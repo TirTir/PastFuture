@@ -1,0 +1,14 @@
+{
+    "name": "PastFuture.Bootstrap",
+    "rootNamespace": "PastFuture.Bootstrap",
+    "references": ["PastFuture.Domain", "PastFuture.Application", "PastFuture.Infrastructure", "PastFuture.UnityAdapters", "PastFuture.Presentation"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

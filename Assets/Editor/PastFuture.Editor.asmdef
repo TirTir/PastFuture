@@ -1,0 +1,14 @@
+{
+    "name": "PastFuture.Editor",
+    "rootNamespace": "PastFuture.Editor",
+    "references": [],
+    "includePlatforms": ["Editor"],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

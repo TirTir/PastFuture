@@ -1,0 +1,14 @@
+{
+    "name": "PastFuture.Presentation",
+    "rootNamespace": "PastFuture.Presentation",
+    "references": ["PastFuture.Application", "PastFuture.Domain", "PastFuture.UnityAdapters"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

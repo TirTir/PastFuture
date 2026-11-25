@@ -1,0 +1,14 @@
+{
+    "name": "PastFuture.Tests.EditMode",
+    "rootNamespace": "PastFuture.Tests.EditMode",
+    "references": ["UnityEngine.TestRunner", "UnityEditor.TestRunner", "PastFuture.Domain", "PastFuture.Application", "PastFuture.Infrastructure", "PastFuture.UnityAdapters", "PastFuture.Presentation", "PastFuture.Bootstrap"],
+    "includePlatforms": ["Editor"],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": ["nunit.framework.dll"],
+    "autoReferenced": false,
+    "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
