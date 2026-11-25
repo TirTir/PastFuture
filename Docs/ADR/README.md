@@ -13,3 +13,4 @@
 | [ADR-568](ADR-568.md) | asmdef 공통 설정과 추가 금지 방향 | Validated | 2026-11-25 |
 | [ADR-569](ADR-569.md) | Bootstrap 최소 씬, LifetimeScope 계약, Manual DI 규칙 (M0) | Accepted | 2026-11-25 |
 | [ADR-570](ADR-570.md) | 순수 .NET headless smoke 프로젝트 (Tools/Headless) | Validated | 2026-11-25 |
+| [ADR-571](ADR-571.md) | Mac에서 Windows Development Build 경로 (M0) | Accepted | 2026-11-25 |

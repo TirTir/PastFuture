@@ -9,16 +9,16 @@
 | 항목 | 값 |
 |---|---|
 | 장비 | MacBook Air (Mac16,12), Apple M4 10코어(P4+E6), RAM 16GB, macOS 26.3.1 |
-| 저장 공간 | 내장 SSD 228GB, 남은 공간 약 38GB (2026-11-25), 외장 SSD 없음 |
+| 저장 공간 | 내장 SSD 228GB, 남은 공간 약 31GB (2026-11-25 23:30, .NET SDK·VS Code·Windows 모듈 설치 후), 외장 SSD 없음 |
 | Unity | Hub 4.0.1, Editor 6000.3.29f1 (revision 96d2fe17529c, arm64), 라이선스 활성 상태로 실행됨 |
-| Unity 모듈 | Mac Standalone(Mono)만 설치. Windows Build Support 미설치 |
+| Unity 모듈 | Mac Standalone(Mono), Windows Build Support (Mono) (2026-11-25 설치, 978MB). Windows IL2CPP는 Mac용 모듈 목록에 없음 |
 | 템플릿 | Universal 3D (`com.unity.template.3d-cross-platform` 17.0.14), URP 17.3.0 |
 | 프로젝트 설정 | Force Text, Visible Meta Files, Input System only, Linear, API .NET Standard 2.1 |
 | Git | 2.50.1 (Apple), Git LFS 3.8.1 (Homebrew) |
 | 원격 | GitHub private `TirTir/PastFuture`, 브랜치 `main` |
 | IDE | Visual Studio Code 1.147.0 (Homebrew cask), 확장 Unity `visualstudiotoolsforunity.vstuc` 1.3.2, C# Dev Kit 3.40.215, C# 2.160.4. Unity External Script Editor = VS Code (2026-11-25 사용자 선택) |
 | .NET SDK | 10.0.404 (LTS, 사용자 선택)와 11.0.100 (Homebrew `dotnet-sdk@10`이 `dotnet-sdk`에 의존해 함께 설치). 기본 `dotnet`은 11.0.100. Unity 컴파일에는 쓰이지 않음 |
-| Windows 검증 장비 | 미확인 |
+| Windows 검증 장비 | 미확인 (2026-11-25 질문했으나 답 없음) |
 
 ## 2. M0 완료 기준 (Handover 4절)
 
@@ -32,7 +32,7 @@
 | 순수 C# smoke | 완료 | 커밋 a450feb, ADR-570. `Tools/Headless`에서 Domain/Application 소스를 Unity 없이 `netstandard2.1`로 빌드, `dotnet test` 2/2 Passed (SDK 10.0.404), 음성 확인(UnityEngine 사용 시 빌드 실패) |
 | docs | 완료 | 커밋 5458754: Handover.md 원본 사본, 이 문서, DevelopmentRules.md, ADR/, CLAUDE.md, README.md |
 | 최소 씬, Manual DI (Handover 4.1-3) | 완료 | 커밋 a73aa29, ADR-569. Bootstrap 씬(Build 0번), `GameBootstrapper`, `CompositionRoot`, `LifetimeScope`. EditMode 14/14 Passed, Editor 수동 Play/Stop 2회 로그 확인. UNITY_T003/T008은 NotRun (M1 PlayMode) |
-| Windows 경로 확인 | 미착수 | Windows Build Support 미설치, 검증 장비 미확인 |
+| Windows 경로 확인 | 일부 완료 | 커밋 7646731, ADR-571. Mac에서 Windows Mono Development Build 성공 (프로젝트 사본, exit 0, errors 0, PE32+ x86-64). 실제 Windows 실행은 장비 미확인으로 NotRun |
 
 ## 3. 테스트 실행 기록
 
@@ -55,6 +55,7 @@
 | Handover ID 없음 (headless) | `EngineFreeAssemblies_LoadWithoutUnity_AndReferenceNoUnityAssembly` | Passed | 2026-11-25 | a450feb |
 | Handover ID 없음 (headless) | `LifetimeScope_RunsHeadless_DisposesChildThenItemsAndCancels` | Passed | 2026-11-25 | a450feb |
 | UNITY_T003 | Bootstrap → 서비스 한 번만 생성 | NotRun | - | - |
+| UNITY_T049 | Windows Development Build → 실제 실행/Profiler | NotRun (빌드만 성공, Windows 장비 미확인) | - | - |
 | UNITY_T008 | Editor PlayMode 반복 → static 혼입 없음 | NotRun | - | - |
 
 - 실행 명령은 [DevelopmentRules.md](DevelopmentRules.md) 5절. 결과 파일 `TestResults/editmode.xml`은 Git에서 제외된다.
@@ -77,6 +78,8 @@
 | 7284c85 | ADR-569, Manual DI 규칙, M0 현황 |
 | ccd2f5a | VS Code 작업 공간 설정, IDE/.NET SDK 기록 |
 | a450feb | 순수 .NET headless smoke (ADR-570) |
+| 1d4e294 | ADR-570, headless 실행 규칙, M0 현황 |
+| 7646731 | Windows Mono Development Build 메서드 (ADR-571) |
 
 ## 5. 이번 단계에서 정한 사항
 
@@ -84,7 +87,9 @@ ADR-563~570 ([ADR/README.md](ADR/README.md)).
 
 ## 6. 미결정 / 다음 작업
 
-- M0 남은 작업: Windows Build Support 설치와 Windows 경로 확인
+- M0 남은 작업: 실제 Windows 장비에서 빌드 실행 확인 (장비 확보 여부 미정). 원래 프로젝트 Editor에서 `BuildWindows.cs` 컴파일 확인
+- Windows 빌드 시 Unity가 tracked 설정 파일을 다시 저장할 수 있음 (ADR-571 Consequences). 특히 `UnityConnectSettings.asset`의 `m_Enabled` 0→1은 사본 첫 import에서 관찰됨. 원래 프로젝트에서 같은 일이 생기면 커밋 전 검토
+- Windows Mono/IL2CPP 비교와 D3D11/D3D12 선택은 Windows 장비 확보 후 (Handover 16-17)
 - `dotnet build PastFuture.Tests.EditMode.csproj`(2026-11-25)에서 CS0649 경고 1건: `AssemblyBoundaryTests.AsmdefData.noEngineReferences` (JsonUtility가 채우는 필드). Unity 컴파일에서는 경고 0건. 수정하지 않음
 - Bootstrap이 아닌 씬에서 Editor Play할 때 Bootstrap 자동 로드 여부 미정 (ADR-569)
 - `Assets/Scenes/SampleScene.unity`는 Build 목록에서만 빠졌고 파일은 남아 있다. 삭제 여부 미정 (ADR-567)

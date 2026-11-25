@@ -91,3 +91,17 @@ dotnet test /Users/yujin/Projects/PastFuture/Tools/Headless/PastFuture.Tests.Hea
 ```bash
 "/Applications/Unity/Hub/Editor/6000.3.29f1/Unity.app/Contents/MacOS/Unity" -batchmode -nographics -projectPath /Users/yujin/Projects/PastFuture -executeMethod PastFuture.Editor.Build.BuildSceneList.Apply -quit -logFile TestResults/buildscenes.log
 ```
+
+## 8. Windows 빌드 (ADR-571)
+
+- Mac에서는 Windows **Mono** Development Build만 만든다. Windows IL2CPP는 Windows 호스트가 필요하다.
+- 필요 모듈: Unity 6000.3.29f1 Windows Build Support (Mono) (`unity install-modules --editor-version 6000.3.29f1 -m windows-mono`)
+- 실행 (Editor를 닫고 실행. Editor가 열려 있으면 메뉴 PastFuture/Build/Windows Development Build). 출력은 `Builds/Windows/`이며 Git에서 제외된다:
+
+```bash
+"/Applications/Unity/Hub/Editor/6000.3.29f1/Unity.app/Contents/MacOS/Unity" -batchmode -nographics -quit -projectPath /Users/yujin/Projects/PastFuture -buildTarget StandaloneWindows64 -executeMethod PastFuture.Editor.Build.BuildWindows.Run -logFile TestResults/build-windows.log
+```
+
+- 빌드가 실패하면 exit 1이다. 보고할 때는 로그의 `[PastFuture.Editor.Build] Windows build ...` 줄과 exit code를 적는다.
+- 빌드 뒤 `git status`를 확인한다. Unity가 `ProjectSettings/*.asset`이나 URP 설정 asset을 다시 저장할 수 있으며, 검토 없이 커밋하지 않는다.
+- Mac에서 빌드가 성공한 것은 Windows에서 실행된다는 근거가 아니다. 실제 실행은 Windows 장비에서 따로 확인한다 (UNITY_T049).
