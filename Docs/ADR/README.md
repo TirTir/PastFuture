@@ -11,3 +11,4 @@
 | [ADR-566](ADR-566.md) | Git LFS 대상에 일반 이미지(.png/.jpg) 포함 | Accepted | 2026-11-25 |
 | [ADR-567](ADR-567.md) | Universal 3D 템플릿 정리 범위 | Accepted | 2026-11-25 |
 | [ADR-568](ADR-568.md) | asmdef 공통 설정과 추가 금지 방향 | Validated | 2026-11-25 |
+| [ADR-569](ADR-569.md) | Bootstrap 최소 씬, LifetimeScope 계약, Manual DI 규칙 (M0) | Accepted | 2026-11-25 |

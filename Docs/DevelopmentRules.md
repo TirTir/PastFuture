@@ -52,7 +52,8 @@ var path = Application.persistentDataPath;                // X (컴파일 오류
 ## 5. 테스트
 
 - 상태 표기: Passed / Failed / Skipped / Blocked / NotRun. 실행 로그가 없으면 NotRun이다.
-- 테스트 이름은 Handover의 Test ID로 시작한다 (예: `UNITY_T001_...`). 원문에 의미가 없는 Test ID에 새 의미를 배정하지 않는다.
+- Handover에 대응하는 Test ID가 있는 테스트는 이름을 그 ID로 시작한다 (예: `UNITY_T001_...`). 원문에 의미가 없는 Test ID에 새 의미를 배정하지 않는다.
+- 대응하는 Test ID가 없는 테스트는 접두사 없이 `대상_조건_기대결과` 형식으로 짓고, ProjectStatus.md 테스트 기록에 "Handover ID 없음"으로 적는다. 임시 ID를 만들지 않는다 (ADR-569).
 - EditMode 실행 (Unity Editor가 같은 프로젝트를 열고 있으면 실패하므로 먼저 닫는다):
 
 ```bash
@@ -69,3 +70,17 @@ var path = Application.persistentDataPath;                // X (컴파일 오류
 - `.meta` 파일은 항상 원본 파일과 함께 커밋한다. Unity가 만든 `.meta`를 손으로 만들거나 GUID를 바꾸지 않는다.
 - 대형 바이너리는 `.gitattributes`의 LFS 규칙을 따른다. 이미지(`.png`, `.jpg` 포함)도 LFS 대상이다 (ADR-566).
 - 제외 대상은 `.gitignore`에 정의되어 있다: `Library/`, `Temp/`, `Logs/`, `UserSettings/`, 빌드 출력, `TestResults/`, 실제 저장 데이터, 비밀 정보.
+
+## 7. Manual DI와 Scope (ADR-569, Handover 16-1·16-17)
+
+- 진입점: `Assets/PastFuture/Scenes/Bootstrap.unity`(Build 0번)의 `GameBootstrapper`가 `CompositionRoot`를 한 번 만들고, 파괴될 때 해제한다.
+- 생성자 주입만 쓴다. Service Locator, DI 컨테이너, static singleton, 전역 가변 static을 쓰지 않는다. 예외는 `GameBootstrapper`의 감지용 static 하나이며 `SubsystemRegistration`에서 초기화한다.
+- 수명이 있는 서비스는 `CompositionRoot`만 생성하고 연결한다. 생성 순서는 16-17의 Bootstrap Scene → App registry/save/profile → menu → Session → Loop → Scene → bindings → simulation을 따른다.
+- MonoBehaviour는 의존성을 명시적 `Initialize(...)`로 받는다. `FindObjectOfType`, 싱글톤 `Instance` 같은 조회로 얻지 않는다. WorldState를 직접 쓰지 않는다 (ADR-484).
+- 해제가 필요한 객체는 소유 `LifetimeScope`에 `Register`한다. 비동기 작업은 그 scope의 `Cancellation`을 받는다. scope를 해제하면 token 취소 → 자식 scope(최신 것부터) → 등록 항목(역순) 순서로 정리된다.
+- `LifetimeScope`는 thread-safe가 아니다. main thread에서만 생성, 등록, 해제한다.
+- Build 씬 목록은 `Assets/Editor/Build/BuildSceneList.cs`의 `ScenePaths`를 고친 뒤 batchmode로 적용한다 (Editor를 닫고 실행. Editor가 열려 있으면 메뉴 PastFuture/Build/Apply Build Scene List). `EditorBuildSettings.asset`을 손으로 고치지 않는다.
+
+```bash
+"/Applications/Unity/Hub/Editor/6000.3.29f1/Unity.app/Contents/MacOS/Unity" -batchmode -nographics -projectPath /Users/yujin/Projects/PastFuture -executeMethod PastFuture.Editor.Build.BuildSceneList.Apply -quit -logFile TestResults/buildscenes.log
+```

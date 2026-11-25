@@ -27,10 +27,10 @@
 | URP 프로젝트 실제 실행 | 완료 | `/Users/yujin/Projects/PastFuture`에서 Editor 실행, Editor.log 컴파일 오류 0건 |
 | private Git + LFS, 첫 commit/clone | 완료 | 커밋 1237ee3 push, 새 clone에서 HEAD·파일 63개·LFS 파일 sha256 일치 |
 | asmdef, Domain UnityEngine 분리 | 완료 | 커밋 af4dd26, ADR-563/568 |
-| EditMode smoke | 완료 | 2026-11-25 batchmode EditMode 5/5 Passed, exit 0 |
+| EditMode smoke | 완료 | 2026-11-25 batchmode EditMode 5/5 Passed, exit 0 (커밋 af4dd26). 최근 실행 14/14 Passed (3절) |
 | 순수 C# smoke | 해석 확인 필요 | 엔진 참조가 없는 어셈블리를 EditMode에서 검증하는 것으로 대신함. `dotnet test` headless는 NotRun (.NET SDK 미설치) |
-| docs | 완료 | `docs:` 커밋 (2026-11-25): Handover.md 원본 사본, 이 문서, DevelopmentRules.md, ADR/, CLAUDE.md, README.md |
-| 최소 씬, Manual DI (Handover 4.1-3) | 미착수 | Bootstrap 설계안 필요 |
+| docs | 완료 | 커밋 5458754: Handover.md 원본 사본, 이 문서, DevelopmentRules.md, ADR/, CLAUDE.md, README.md |
+| 최소 씬, Manual DI (Handover 4.1-3) | 완료 | 커밋 a73aa29, ADR-569. Bootstrap 씬(Build 0번), `GameBootstrapper`, `CompositionRoot`, `LifetimeScope`. EditMode 14/14 Passed, Editor 수동 Play/Stop 2회 로그 확인. UNITY_T003/T008은 NotRun (M1 PlayMode) |
 | Windows 경로 확인 | 미착수 | Windows Build Support 미설치, 검증 장비 미확인 |
 
 ## 3. 테스트 실행 기록
@@ -42,10 +42,23 @@
 | UNITY_T001 | `UNITY_T001_EngineFreeAsmdef_HasNoEngineReferencesFlag` | Passed | 2026-11-25 | af4dd26 |
 | UNITY_T002 | `UNITY_T002_ProjectAsmdefs_FollowLayerRules` | Passed | 2026-11-25 | af4dd26 |
 | UNITY_T002 | `UNITY_T002_ProjectAsmdefs_HaveNoCycles` | Passed | 2026-11-25 | af4dd26 |
+| Handover ID 없음 | `LifetimeScope_DisposesRegisteredItemsInReverseOrder` | Passed | 2026-11-25 | a73aa29 |
+| Handover ID 없음 | `LifetimeScope_DisposesChildrenBeforeOwnItems` | Passed | 2026-11-25 | a73aa29 |
+| Handover ID 없음 | `LifetimeScope_CancelsOwnAndChildTokensOnDispose` | Passed | 2026-11-25 | a73aa29 |
+| Handover ID 없음 | `LifetimeScope_DisposingChild_DoesNotCancelParent_AndDetachesChild` | Passed | 2026-11-25 | a73aa29 |
+| Handover ID 없음 | `LifetimeScope_DisposeTwice_DisposesItemsOnce` | Passed | 2026-11-25 | a73aa29 |
+| Handover ID 없음 | `LifetimeScope_RegisterOrCreateChildAfterDispose_Throws` | Passed | 2026-11-25 | a73aa29 |
+| Handover ID 없음 | `LifetimeScope_RegisterNull_Throws` | Passed | 2026-11-25 | a73aa29 |
+| Handover ID 없음 | `LifetimeScope_ThrowingItem_StillDisposesOthers_AndAggregatesErrors` | Passed | 2026-11-25 | a73aa29 |
+| Handover ID 없음 | `CompositionRoot_CreatesApplicationScope_AndDisposesIt` | Passed | 2026-11-25 | a73aa29 |
+| UNITY_T003 | Bootstrap → 서비스 한 번만 생성 | NotRun | - | - |
+| UNITY_T008 | Editor PlayMode 반복 → static 혼입 없음 | NotRun | - | - |
 
 - 실행 명령은 [DevelopmentRules.md](DevelopmentRules.md) 5절. 결과 파일 `TestResults/editmode.xml`은 Git에서 제외된다.
 - 위반을 일부러 넣은 실행(Presentation→Infrastructure, Application 엔진 참조 허용)에서 `FollowLayerRules`, `HasNoEngineReferencesFlag`가 Failed. 되돌린 뒤 5/5 Passed.
 - `HaveNoCycles`의 실패 사례는 실행하지 못했다 (Unity가 순환 asmdef를 컴파일 단계에서 거부).
+- 최근 실행: 2026-11-25 batchmode EditMode 14/14 Passed, exit 0, 컴파일 경고·오류 0건 (Build 씬 목록 변경 뒤 재실행).
+- UNITY_T003/T008: 2026-11-25 Editor 수동 Play/Stop 2회에서 `Composition root created`/`Application scope disposed` 로그가 짝지어 나오고 예외가 없었다. 수동 확인이라 Passed로 적지 않는다. PlayMode 자동 테스트는 M1 (ADR-565).
 - 위 표에 없는 Handover의 모든 Test ID는 NotRun이다.
 
 ## 4. 커밋 이력 (M0)
@@ -55,14 +68,18 @@
 | 1237ee3 | Unity 6.3 LTS URP 초기 프로젝트, `.gitignore`, `.gitattributes` |
 | c1692be | 템플릿 예제와 미사용 패키지 정리 (ADR-567) |
 | af4dd26 | 계층별 asmdef 골격과 경계 테스트 (ADR-563, ADR-568) |
+| 5458754 | Handover 원본 사본, 개발 규칙, 현황, ADR-563~568 |
+| a73aa29 | Bootstrap 씬, LifetimeScope, CompositionRoot, Build 씬 목록 스크립트 (ADR-569) |
 
 ## 5. 이번 단계에서 정한 사항
 
-ADR-563~568 ([ADR/README.md](ADR/README.md)).
+ADR-563~569 ([ADR/README.md](ADR/README.md)).
 
 ## 6. 미결정 / 다음 작업
 
-- M0 남은 작업: Bootstrap 최소 씬과 Manual DI, Windows Build Support 설치와 Windows 경로 확인, IDE 선택, "순수 C# smoke" 해석 확인
+- M0 남은 작업: Windows Build Support 설치와 Windows 경로 확인, IDE 선택, "순수 C# smoke" 해석 확인
+- Bootstrap이 아닌 씬에서 Editor Play할 때 Bootstrap 자동 로드 여부 미정 (ADR-569)
+- `Assets/Scenes/SampleScene.unity`는 Build 목록에서만 빠졌고 파일은 남아 있다. 삭제 여부 미정 (ADR-567)
 - `productName`(`pastfuture`), `companyName`(`DefaultCompany`) 최종 이름 미정
 - Mobile 품질 레벨 정리는 URP 품질 프로필 결정 때 (ADR-567)
 - UnityYAMLMerge 연결 여부 (ADR-566)
