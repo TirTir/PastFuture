@@ -21,6 +21,7 @@ namespace PastFuture.Presentation.Player
         [UnityEngine.SerializeField] private UnityEngine.Transform cameraPivot;
         [UnityEngine.SerializeField] private LookSettings look = new LookSettings();
 
+        private UnityEngine.InputSystem.InputActionAsset _controlsInstance;
         private UnityEngine.InputSystem.InputActionMap _gameplay;
         private UnityEngine.InputSystem.InputActionMap _ui;
         private UnityEngine.InputSystem.InputAction _move;
@@ -50,8 +51,11 @@ namespace PastFuture.Presentation.Player
                 return;
             }
 
-            _gameplay = controls.FindActionMap(GameplayMap, throwIfNotFound: true);
-            _ui = controls.FindActionMap(UiMap, throwIfNotFound: true);
+            // Each rig uses its own copy of the asset: enabling the shared asset would leave action state on it
+            // that outlives this rig (scene changes, repeated Play without domain reload, input test fixtures).
+            _controlsInstance = UnityEngine.Object.Instantiate(controls);
+            _gameplay = _controlsInstance.FindActionMap(GameplayMap, throwIfNotFound: true);
+            _ui = _controlsInstance.FindActionMap(UiMap, throwIfNotFound: true);
             _move = _gameplay.FindAction("Move", throwIfNotFound: true);
             _look = _gameplay.FindAction("Look", throwIfNotFound: true);
             _sprint = _gameplay.FindAction("Sprint", throwIfNotFound: true);
@@ -84,6 +88,15 @@ namespace PastFuture.Presentation.Player
             _ui.Disable();
             motor.SetMoveIntent(UnityEngine.Vector3.zero, false);
             SetCursorCaptured(false);
+        }
+
+        private void OnDestroy()
+        {
+            if (_controlsInstance != null)
+            {
+                UnityEngine.Object.Destroy(_controlsInstance);
+                _controlsInstance = null;
+            }
         }
 
         private void Update()
