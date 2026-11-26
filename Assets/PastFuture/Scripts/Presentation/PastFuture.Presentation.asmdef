@@ -1,7 +1,7 @@
 {
     "name": "PastFuture.Presentation",
     "rootNamespace": "PastFuture.Presentation",
-    "references": ["PastFuture.Application", "PastFuture.Domain", "PastFuture.UnityAdapters"],
+    "references": ["PastFuture.Application", "PastFuture.Domain", "PastFuture.UnityAdapters", "Unity.InputSystem"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

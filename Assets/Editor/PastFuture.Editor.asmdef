@@ -1,7 +1,7 @@
 {
     "name": "PastFuture.Editor",
     "rootNamespace": "PastFuture.Editor",
-    "references": [],
+    "references": ["PastFuture.UnityAdapters", "PastFuture.Presentation", "Unity.InputSystem"],
     "includePlatforms": ["Editor"],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
