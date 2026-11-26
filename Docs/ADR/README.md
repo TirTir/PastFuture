@@ -7,10 +7,11 @@
 |---|---|---|---|
 | [ADR-563](ADR-563.md) | Application 어셈블리도 엔진 참조 금지 | Validated | 2026-11-25 |
 | [ADR-564](ADR-564.md) | Unity 타입 이름 충돌 처리: 전체 이름 사용 | Accepted | 2026-11-25 |
-| [ADR-565](ADR-565.md) | PlayMode 테스트 어셈블리는 M1에서 생성 | Accepted | 2026-11-25 |
+| [ADR-565](ADR-565.md) | PlayMode 테스트 어셈블리는 M1에서 생성 | Validated | 2026-11-25 (생성 2026-11-26) |
 | [ADR-566](ADR-566.md) | Git LFS 대상에 일반 이미지(.png/.jpg) 포함 | Accepted | 2026-11-25 |
 | [ADR-567](ADR-567.md) | Universal 3D 템플릿 정리 범위 | Accepted | 2026-11-25 |
 | [ADR-568](ADR-568.md) | asmdef 공통 설정과 추가 금지 방향 | Validated | 2026-11-25 |
 | [ADR-569](ADR-569.md) | Bootstrap 최소 씬, LifetimeScope 계약, Manual DI 규칙 (M0) | Accepted | 2026-11-25 |
 | [ADR-570](ADR-570.md) | 순수 .NET headless smoke 프로젝트 (Tools/Headless) | Validated | 2026-11-25 |
 | [ADR-571](ADR-571.md) | Mac에서 Windows Development Build 경로 (M0) | Accepted | 2026-11-25 |
+| [ADR-572](ADR-572.md) | M1 1인칭 이동·카메라·입력과 테스트 방 | Validated (조작감 미확인) | 2026-11-26 |

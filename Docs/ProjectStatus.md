@@ -1,7 +1,7 @@
 # Past, Future — 진행 현황
 
-- 갱신: 2026-11-25
-- 현재 단계: 로드맵 17 핵심 게임플레이 프로토타입 / **M0 개발 환경 (진행 중)**
+- 갱신: 2026-11-26
+- 현재 단계: 로드맵 17 핵심 게임플레이 프로토타입 / **M0 개발 환경 종료** (실제 Windows 실행은 이월, 2026-11-26 사용자 결정) → **M1 1인칭 기본 (진행 중)**
 - 규칙: 실제 실행 근거(명령, 결과, 커밋)가 있는 항목만 완료로 적는다. 근거가 없으면 NotRun 또는 미확인이다.
 
 ## 1. 확인된 개발 환경 (2026-11-24~25 실측)
@@ -18,7 +18,7 @@
 | 원격 | GitHub private `TirTir/PastFuture`, 브랜치 `main` |
 | IDE | Visual Studio Code 1.147.0 (Homebrew cask), 확장 Unity `visualstudiotoolsforunity.vstuc` 1.3.2, C# Dev Kit 3.40.215, C# 2.160.4. Unity External Script Editor = VS Code (2026-11-25 사용자 선택) |
 | .NET SDK | 10.0.404 (LTS, 사용자 선택)와 11.0.100 (Homebrew `dotnet-sdk@10`이 `dotnet-sdk`에 의존해 함께 설치). 기본 `dotnet`은 11.0.100. Unity 컴파일에는 쓰이지 않음 |
-| Windows 검증 장비 | 미확인 (2026-11-25 질문했으나 답 없음) |
+| Windows 검증 장비 | 없음 (2026-11-26 사용자 답). 실제 Windows 실행은 장비 확보 때까지 이월 |
 
 ## 2. M0 완료 기준 (Handover 4절)
 
@@ -31,8 +31,8 @@
 | EditMode smoke | 완료 | 2026-11-25 batchmode EditMode 5/5 Passed, exit 0 (커밋 af4dd26). 최근 실행 14/14 Passed (3절) |
 | 순수 C# smoke | 완료 | 커밋 a450feb, ADR-570. `Tools/Headless`에서 Domain/Application 소스를 Unity 없이 `netstandard2.1`로 빌드, `dotnet test` 2/2 Passed (SDK 10.0.404), 음성 확인(UnityEngine 사용 시 빌드 실패) |
 | docs | 완료 | 커밋 5458754: Handover.md 원본 사본, 이 문서, DevelopmentRules.md, ADR/, CLAUDE.md, README.md |
-| 최소 씬, Manual DI (Handover 4.1-3) | 완료 | 커밋 a73aa29, ADR-569. Bootstrap 씬(Build 0번), `GameBootstrapper`, `CompositionRoot`, `LifetimeScope`. EditMode 14/14 Passed, Editor 수동 Play/Stop 2회 로그 확인. UNITY_T003/T008은 NotRun (M1 PlayMode) |
-| Windows 경로 확인 | 일부 완료 | 커밋 7646731, ADR-571. Mac에서 Windows Mono Development Build 성공 (프로젝트 사본, exit 0, errors 0, PE32+ x86-64). 실제 Windows 실행은 장비 미확인으로 NotRun |
+| 최소 씬, Manual DI (Handover 4.1-3) | 완료 | 커밋 a73aa29, ADR-569. Bootstrap 씬(Build 0번), `GameBootstrapper`, `CompositionRoot`, `LifetimeScope`. EditMode 14/14 Passed, Editor 수동 Play/Stop 2회 로그 확인. UNITY_T003/T008은 2026-11-26 M1 PlayMode 테스트에서 Passed (4절) |
+| Windows 경로 확인 | Mac 범위 완료, 실제 실행 이월 | 커밋 7646731, ADR-571. Mac에서 Windows Mono Development Build 성공 (프로젝트 사본, exit 0, errors 0, PE32+ x86-64). 2026-11-26 원래 프로젝트 Editor에서 `PastFuture.Editor.dll` 재컴파일 성공 (`BuildWindows.cs` 포함, CS 오류·경고 0건). 실제 Windows 실행(UNITY_T049)은 Windows 장비가 없어 NotRun, 장비 확보 때까지 이월 (2026-11-26 사용자 결정) |
 
 ## 3. 테스트 실행 기록
 
@@ -52,21 +52,35 @@
 | Handover ID 없음 | `LifetimeScope_RegisterNull_Throws` | Passed | 2026-11-25 | a73aa29 |
 | Handover ID 없음 | `LifetimeScope_ThrowingItem_StillDisposesOthers_AndAggregatesErrors` | Passed | 2026-11-25 | a73aa29 |
 | Handover ID 없음 | `CompositionRoot_CreatesApplicationScope_AndDisposesIt` | Passed | 2026-11-25 | a73aa29 |
+| Handover ID 없음 | `PlayerMotorMathTests` 8개 (걷기·달리기 속도, 대각선 제한, 감속, 수직 입력 무시, 30/60 FPS 동일, 접지, 낙하) | Passed | 2026-11-26 | 9282b9e |
+| Handover ID 없음 | `FirstPersonLookStateTests` 4개 (pitch 방향·제한, invertY, yaw 감기, 초기 pitch 읽기) | Passed | 2026-11-26 | 9282b9e |
+| Handover ID 없음 (PlayMode) | `M1TestRoomMovementTests` 10개 (ADR-572 ValidationEvidence) | Passed | 2026-11-26 | 9282b9e |
 | Handover ID 없음 (headless) | `EngineFreeAssemblies_LoadWithoutUnity_AndReferenceNoUnityAssembly` | Passed | 2026-11-25 | a450feb |
 | Handover ID 없음 (headless) | `LifetimeScope_RunsHeadless_DisposesChildThenItemsAndCancels` | Passed | 2026-11-25 | a450feb |
-| UNITY_T003 | Bootstrap → 서비스 한 번만 생성 | NotRun | - | - |
-| UNITY_T049 | Windows Development Build → 실제 실행/Profiler | NotRun (빌드만 성공, Windows 장비 미확인) | - | - |
-| UNITY_T008 | Editor PlayMode 반복 → static 혼입 없음 | NotRun | - | - |
+| UNITY_T003 | `UNITY_T003_BootstrapSceneLoadedTwice_KeepsSingleCompositionRoot` (PlayMode) | Passed | 2026-11-26 | c19ebf3 |
+| UNITY_T049 | Windows Development Build → 실제 실행/Profiler | NotRun (빌드만 성공, Windows 장비 없음, 이월) | - | - |
+| UNITY_T008 | `UNITY_T008_BootstrapRestartedInSameDomain_CreatesFreshRootAndDisposesPrevious` (PlayMode, 같은 도메인 재시작 범위) | Passed | 2026-11-26 | c19ebf3 |
 
 - 실행 명령은 [DevelopmentRules.md](DevelopmentRules.md) 5절. 결과 파일 `TestResults/editmode.xml`은 Git에서 제외된다.
 - 위반을 일부러 넣은 실행(Presentation→Infrastructure, Application 엔진 참조 허용)에서 `FollowLayerRules`, `HasNoEngineReferencesFlag`가 Failed. 되돌린 뒤 5/5 Passed.
 - `HaveNoCycles`의 실패 사례는 실행하지 못했다 (Unity가 순환 asmdef를 컴파일 단계에서 거부).
 - headless: 2026-11-25 `dotnet test` ([DevelopmentRules.md](DevelopmentRules.md) 5절) 2/2 Passed, exit 0, 빌드 경고 0건.
-- 최근 실행: 2026-11-25 batchmode EditMode 14/14 Passed, exit 0, 컴파일 경고·오류 0건 (Build 씬 목록 변경 뒤 재실행).
-- UNITY_T003/T008: 2026-11-25 Editor 수동 Play/Stop 2회에서 `Composition root created`/`Application scope disposed` 로그가 짝지어 나오고 예외가 없었다. 수동 확인이라 Passed로 적지 않는다. PlayMode 자동 테스트는 M1 (ADR-565).
+- UNITY_T003/T008: 2026-11-26 PlayMode 자동 테스트 2/2 Passed (ADR-565). UNITY_T008은 Domain Reload를 끈 Play 반복과 같은 조건(같은 도메인에서 재시작)만 다룬다. Editor Play/Stop 버튼 반복은 자동화하지 않았다. 음성 확인(중복 검사·해제 제거)에서 둘 다 Failed, 되돌린 뒤 Passed.
+- 최근 실행: 2026-11-26 scratchpad 사본에서 batchmode EditMode 26/26, PlayMode 12/12 Passed, exit 0, 컴파일 경고·오류 0건. headless 2/2 Passed. 원래 프로젝트의 Editor가 열려 있어 사본에서 실행했다.
 - 위 표에 없는 Handover의 모든 Test ID는 NotRun이다.
 
-## 4. 커밋 이력 (M0)
+## 4. M1 진행 (Handover 4절 M1)
+
+| 단계 | 상태 | 근거 |
+|---|---|---|
+| 1. PlayMode 테스트 어셈블리, UNITY_T003/T008 | 완료 (c19ebf3) | ADR-565. PlayMode 2/2, EditMode 14/14 Passed (2026-11-26, 사본) |
+| 2. 방·복도 테스트 씬, 입력, `CharacterController` 이동, 카메라 | 자동 테스트 완료 (9282b9e), 조작감 NotRun | ADR-572. EditMode 26/26, PlayMode 12/12 Passed (2026-11-26, 사본). Editor에서 직접 플레이해 보는 확인은 사용자 몫 |
+| 3. Entity ID ↔ GameObject 연결 등록부 (UNITY_T024) | NotStarted | - |
+| 4. 물건 줍기·놓기 Command | NotStarted | 착수 전 Domain 저장소 범위 확인 필요 (WorldState는 M2) |
+| 5. 물리 결과(`PhysicsObservation`) 제출 | NotStarted | - |
+| 6. 시간 배율 초기 측정 | NotStarted | - |
+
+## 5. 커밋 이력
 
 | 커밋 | 내용 |
 |---|---|
@@ -80,14 +94,21 @@
 | a450feb | 순수 .NET headless smoke (ADR-570) |
 | 1d4e294 | ADR-570, headless 실행 규칙, M0 현황 |
 | 7646731 | Windows Mono Development Build 메서드 (ADR-571) |
+| 90882ec | ADR-571, Windows 빌드 규칙, M0 현황 |
+| c19ebf3 | M1: PlayMode 테스트 어셈블리, UNITY_T003/T008 (ADR-565) |
+| 9282b9e | M1: 1인칭 이동·카메라·입력, 테스트 방 생성기와 씬 (ADR-572) |
 
-## 5. 이번 단계에서 정한 사항
+## 6. 이번 단계에서 정한 사항
 
-ADR-563~570 ([ADR/README.md](ADR/README.md)).
+ADR-563~571 ([ADR/README.md](ADR/README.md)).
 
-## 6. 미결정 / 다음 작업
+## 7. 미결정 / 다음 작업
 
-- M0 남은 작업: 실제 Windows 장비에서 빌드 실행 확인 (장비 확보 여부 미정). 원래 프로젝트 Editor에서 `BuildWindows.cs` 컴파일 확인
+- 이월: 실제 Windows 장비에서 빌드 실행 확인 (UNITY_T049). Windows 장비 없음 (2026-11-26). 장비를 확보하면 M1 이후 어느 시점에든 실행한다
+- 다음 작업: M1 3단계 (4절 표). 원래 프로젝트 Editor에서 새 코드 컴파일과 M1_TestRoom 직접 플레이(조작감) 확인
+- 템플릿 `Assets/InputSystem_Actions.inputactions`: 게임 입력은 `PastFutureControls`로 옮겼다. 템플릿 파일은 아직 project-wide actions로 등록되어 있다. 삭제하거나 등록을 해제할지 미정 (ADR-567, ADR-572)
+- 점프·앉기·게임패드·리바인딩 여부 미정 (원문에 근거 없음, ADR-572)
+- 2026-11-26 Editor.log에 `Unexpected transport error from import worker 1 (possible crash)` 1건. 이후 컴파일과 import는 정상. 원인 미확인, 조치하지 않음
 - Windows 빌드 시 Unity가 tracked 설정 파일을 다시 저장할 수 있음 (ADR-571 Consequences). 특히 `UnityConnectSettings.asset`의 `m_Enabled` 0→1은 사본 첫 import에서 관찰됨. 원래 프로젝트에서 같은 일이 생기면 커밋 전 검토
 - Windows Mono/IL2CPP 비교와 D3D11/D3D12 선택은 Windows 장비 확보 후 (Handover 16-17)
 - `dotnet build PastFuture.Tests.EditMode.csproj`(2026-11-25)에서 CS0649 경고 1건: `AssemblyBoundaryTests.AsmdefData.noEngineReferences` (JsonUtility가 채우는 필드). Unity 컴파일에서는 경고 0건. 수정하지 않음

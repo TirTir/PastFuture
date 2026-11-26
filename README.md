@@ -32,7 +32,10 @@ Unity Hub에서 Add → `PastFuture` 폴더를 열고, Editor 버전 6000.3.29f1
 
 ```text
 Assets/PastFuture/Scripts/{Domain,Application,Infrastructure,UnityAdapters,Presentation,Bootstrap}
+Assets/PastFuture/Scenes/Test/  생성기로 만든 테스트 씬 (M1_TestRoom)
+Assets/PastFuture/Settings/     입력 액션 등 설정 에셋
 Assets/Editor/            Editor 전용 코드
 Assets/Tests/EditMode/    EditMode 테스트
+Assets/Tests/PlayMode/    PlayMode 테스트
 Docs/                     설계·규칙·결정 문서
 ```

@@ -38,6 +38,12 @@ EditMode 테스트 (Unity Editor가 이 프로젝트를 열고 있으면 먼저 
 "/Applications/Unity/Hub/Editor/6000.3.29f1/Unity.app/Contents/MacOS/Unity" -batchmode -nographics -projectPath /Users/yujin/Projects/PastFuture -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile TestResults/editmode.log
 ```
 
+PlayMode 테스트 (Editor를 먼저 닫는다, `-nographics` 쓰지 않음, ADR-565):
+
+```bash
+"/Applications/Unity/Hub/Editor/6000.3.29f1/Unity.app/Contents/MacOS/Unity" -batchmode -projectPath /Users/yujin/Projects/PastFuture -runTests -testPlatform PlayMode -testResults TestResults/playmode.xml -logFile TestResults/playmode.log
+```
+
 순수 .NET headless smoke (Editor를 닫지 않아도 됨, ADR-570):
 
 ```bash

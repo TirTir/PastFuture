@@ -32,6 +32,7 @@
 | `PastFuture.Bootstrap` | `Assets/PastFuture/Scripts/Bootstrap/` | 위 런타임 계층 전부 | 허용 |
 | `PastFuture.Editor` | `Assets/Editor/` | 런타임 계층 (Editor 전용) | 허용 |
 | `PastFuture.Tests.EditMode` | `Assets/Tests/EditMode/` | 런타임 계층 + NUnit/TestRunner (Editor 전용) | 허용 |
+| `PastFuture.Tests.PlayMode` | `Assets/Tests/PlayMode/` | 런타임 계층 + NUnit/`UnityEngine.TestRunner` (Editor 전용 아님, `UNITY_INCLUDE_TESTS`) | 허용 |
 
 - 금지: 아래 계층→위 계층 참조, Infrastructure↔UnityAdapters 상호 참조, UnityAdapters→Presentation 참조. 연결은 Bootstrap에서 한다.
 - 모든 런타임 asmdef는 `autoReferenced: false`, 이름 참조(`useGUIDs` 미사용). Inspector에서 참조를 추가하면 GUID 형식으로 저장될 수 있으니 이름 형식으로 고친다.
@@ -61,7 +62,14 @@ var path = Application.persistentDataPath;                // X (컴파일 오류
 ```
 
 - 결과는 `TestResults/`에 남고 Git에서 제외된다. 보고할 때는 XML의 total/passed/failed와 exit code를 함께 적는다.
-- PlayMode 테스트 어셈블리는 M1에서 만든다 (ADR-565).
+- PlayMode 실행 (EditMode와 같이 Editor를 먼저 닫는다. 렌더링 검증이 들어갈 수 있으므로 `-nographics`를 쓰지 않는다, Handover 16-18, ADR-565):
+
+```bash
+"/Applications/Unity/Hub/Editor/6000.3.29f1/Unity.app/Contents/MacOS/Unity" -batchmode -projectPath /Users/yujin/Projects/PastFuture -runTests -testPlatform PlayMode -testResults TestResults/playmode.xml -logFile TestResults/playmode.log
+```
+
+- PlayMode 테스트에서 `DontDestroyOnLoad`로 남는 객체(예: `GameBootstrapper`)는 `[UnityTearDown]`에서 파괴한다. 다음 테스트로 상태가 넘어가지 않게 한다.
+- 테스트가 internal 멤버를 봐야 하면 읽기 전용 접근자만 추가하고 `InternalsVisibleTo`로 연다. 테스트를 위해 동작을 바꾸지 않는다.
 - 순수 .NET headless 실행 (Unity Editor가 열려 있어도 된다. SDK는 `Tools/Headless/global.json`이 10.0.x로 고정, ADR-570):
 
 ```bash
@@ -91,6 +99,17 @@ dotnet test /Users/yujin/Projects/PastFuture/Tools/Headless/PastFuture.Tests.Hea
 ```bash
 "/Applications/Unity/Hub/Editor/6000.3.29f1/Unity.app/Contents/MacOS/Unity" -batchmode -nographics -projectPath /Users/yujin/Projects/PastFuture -executeMethod PastFuture.Editor.Build.BuildSceneList.Apply -quit -logFile TestResults/buildscenes.log
 ```
+
+## 7.1 M1 테스트 방 (ADR-572)
+
+- `Assets/PastFuture/Scenes/Test/M1_TestRoom.unity`는 생성기가 만든다. 배치를 바꿀 때는 `Assets/Editor/Dev/M1TestSceneBuilder.cs`를 고치고 다시 생성한다. PlayMode 테스트의 좌표 가정도 함께 고친다.
+
+```bash
+"/Applications/Unity/Hub/Editor/6000.3.29f1/Unity.app/Contents/MacOS/Unity" -batchmode -nographics -quit -projectPath /Users/yujin/Projects/PastFuture -executeMethod PastFuture.Editor.Dev.M1TestSceneBuilder.Build -logFile TestResults/m1scene.log
+```
+
+- 같은 rig 안의 컴포넌트와 설정 에셋(입력 액션 등)은 serialized 필드로 연결할 수 있다. 수명 있는 서비스는 7절에 따라 `Initialize(...)`로 받는다.
+- 이동·카메라는 실제 시간(`Time.deltaTime`) 기준이다. 게임 시계(20배)를 곱하지 않는다.
 
 ## 8. Windows 빌드 (ADR-571)
 
