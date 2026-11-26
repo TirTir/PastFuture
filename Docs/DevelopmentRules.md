@@ -68,6 +68,7 @@ var path = Application.persistentDataPath;                // X (컴파일 오류
 "/Applications/Unity/Hub/Editor/6000.3.29f1/Unity.app/Contents/MacOS/Unity" -batchmode -projectPath /Users/yujin/Projects/PastFuture -runTests -testPlatform PlayMode -testResults TestResults/playmode.xml -logFile TestResults/playmode.log
 ```
 
+- 입력 연결은 Input System의 `InputTestFixture`(가상 장치)로 테스트한다. `Packages/manifest.json`의 `testables`에 `com.unity.inputsystem`이 있어서, PlayMode 실행에 Input System 패키지 자체 테스트 4개(그중 2개는 패키지의 Ignore)가 함께 나온다. 결과를 보고할 때는 이 테스트를 구분한다 (ADR-572).
 - PlayMode 테스트에서 `DontDestroyOnLoad`로 남는 객체(예: `GameBootstrapper`)는 `[UnityTearDown]`에서 파괴한다. 다음 테스트로 상태가 넘어가지 않게 한다.
 - 테스트가 internal 멤버를 봐야 하면 읽기 전용 접근자만 추가하고 `InternalsVisibleTo`로 연다. 테스트를 위해 동작을 바꾸지 않는다.
 - 순수 .NET headless 실행 (Unity Editor가 열려 있어도 된다. SDK는 `Tools/Headless/global.json`이 10.0.x로 고정, ADR-570):

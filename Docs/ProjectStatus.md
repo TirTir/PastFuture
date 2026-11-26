@@ -55,6 +55,7 @@
 | Handover ID 없음 | `PlayerMotorMathTests` 8개 (걷기·달리기 속도, 대각선 제한, 감속, 수직 입력 무시, 30/60 FPS 동일, 접지, 낙하) | Passed | 2026-11-26 | 9282b9e |
 | Handover ID 없음 | `FirstPersonLookStateTests` 4개 (pitch 방향·제한, invertY, yaw 감기, 초기 pitch 읽기) | Passed | 2026-11-26 | 9282b9e |
 | Handover ID 없음 (PlayMode) | `M1TestRoomMovementTests` 10개 (ADR-572 ValidationEvidence) | Passed | 2026-11-26 | 9282b9e |
+| Handover ID 없음 (PlayMode) | `FirstPersonRigInputTests` 7개 (가상 키보드·마우스 → rig → motor) | Passed | 2026-11-26 | 15c6b8c |
 | Handover ID 없음 (headless) | `EngineFreeAssemblies_LoadWithoutUnity_AndReferenceNoUnityAssembly` | Passed | 2026-11-25 | a450feb |
 | Handover ID 없음 (headless) | `LifetimeScope_RunsHeadless_DisposesChildThenItemsAndCancels` | Passed | 2026-11-25 | a450feb |
 | UNITY_T003 | `UNITY_T003_BootstrapSceneLoadedTwice_KeepsSingleCompositionRoot` (PlayMode) | Passed | 2026-11-26 | c19ebf3 |
@@ -66,7 +67,8 @@
 - `HaveNoCycles`의 실패 사례는 실행하지 못했다 (Unity가 순환 asmdef를 컴파일 단계에서 거부).
 - headless: 2026-11-25 `dotnet test` ([DevelopmentRules.md](DevelopmentRules.md) 5절) 2/2 Passed, exit 0, 빌드 경고 0건.
 - UNITY_T003/T008: 2026-11-26 PlayMode 자동 테스트 2/2 Passed (ADR-565). UNITY_T008은 Domain Reload를 끈 Play 반복과 같은 조건(같은 도메인에서 재시작)만 다룬다. Editor Play/Stop 버튼 반복은 자동화하지 않았다. 음성 확인(중복 검사·해제 제거)에서 둘 다 Failed, 되돌린 뒤 Passed.
-- 최근 실행: 2026-11-26 scratchpad 사본에서 batchmode EditMode 26/26, PlayMode 12/12 Passed, exit 0, 컴파일 경고·오류 0건. headless 2/2 Passed. 원래 프로젝트의 Editor가 열려 있어 사본에서 실행했다.
+- 최근 실행: 2026-11-26 scratchpad 사본에서 batchmode EditMode 26/26 Passed. PlayMode 23개 중 21 Passed, 2 Skipped. Skipped 2개는 `testables`로 포함된 Input System 패키지 자체 테스트로, 패키지가 Ignore로 표시한 것이다. exit 0, 컴파일 경고·오류 0건. headless 2/2 Passed. 원래 프로젝트의 Editor가 열려 있어 사본에서 실행했다.
+- 원래 프로젝트 Editor: 2026-11-26 새 코드 컴파일(오류·경고 0)과 `M1_TestRoom` Play(콘솔 오류 없음)를 확인했다 (ADR-572).
 - 위 표에 없는 Handover의 모든 Test ID는 NotRun이다.
 
 ## 4. M1 진행 (Handover 4절 M1)
@@ -74,7 +76,7 @@
 | 단계 | 상태 | 근거 |
 |---|---|---|
 | 1. PlayMode 테스트 어셈블리, UNITY_T003/T008 | 완료 (c19ebf3) | ADR-565. PlayMode 2/2, EditMode 14/14 Passed (2026-11-26, 사본) |
-| 2. 방·복도 테스트 씬, 입력, `CharacterController` 이동, 카메라 | 자동 테스트 완료 (9282b9e), 조작감 NotRun | ADR-572. EditMode 26/26, PlayMode 12/12 Passed (2026-11-26, 사본). Editor에서 직접 플레이해 보는 확인은 사용자 몫 |
+| 2. 방·복도 테스트 씬, 입력, `CharacterController` 이동, 카메라 | 자동 테스트 완료 (9282b9e, 입력 활성 상태 수정 ab66634, 입력 연결 테스트 15c6b8c), 조작감 NotRun | ADR-572. EditMode 26/26, PlayMode 12/12 Passed (2026-11-26, 사본). Editor에서 직접 플레이해 보는 확인은 사용자 몫 |
 | 3. Entity ID ↔ GameObject 연결 등록부 (UNITY_T024) | NotStarted | - |
 | 4. 물건 줍기·놓기 Command | NotStarted | 착수 전 Domain 저장소 범위 확인 필요 (WorldState는 M2) |
 | 5. 물리 결과(`PhysicsObservation`) 제출 | NotStarted | - |
@@ -97,6 +99,9 @@
 | 90882ec | ADR-571, Windows 빌드 규칙, M0 현황 |
 | c19ebf3 | M1: PlayMode 테스트 어셈블리, UNITY_T003/T008 (ADR-565) |
 | 9282b9e | M1: 1인칭 이동·카메라·입력, 테스트 방 생성기와 씬 (ADR-572) |
+| fc3ce9c | M0 종료, ADR-572, M1 1·2단계 기록 |
+| ab66634 | rig 입력 활성 상태를 직접 관리 (커서 잠금 의존 제거) |
+| 15c6b8c | 입력 연결 PlayMode 테스트 (`InputTestFixture`, manifest `testables`) |
 
 ## 6. 이번 단계에서 정한 사항
 
@@ -105,7 +110,9 @@ ADR-563~571 ([ADR/README.md](ADR/README.md)).
 ## 7. 미결정 / 다음 작업
 
 - 이월: 실제 Windows 장비에서 빌드 실행 확인 (UNITY_T049). Windows 장비 없음 (2026-11-26). 장비를 확보하면 M1 이후 어느 시점에든 실행한다
-- 다음 작업: M1 3단계 (4절 표). 원래 프로젝트 Editor에서 새 코드 컴파일과 M1_TestRoom 직접 플레이(조작감) 확인
+- 다음 작업: M1 3단계 (4절 표). M1_TestRoom 직접 플레이로 조작감 확인 (사용자)
+- 2026-11-26 전날 실행한 Unity Editor 프로세스가 "Hold on..." 상태로 멈춘 채 남아 있었다. 사용자가 새로 연 Editor와 같은 프로젝트를 동시에 열고 있었고, 사용자 승인으로 종료했다. Editor를 다시 켤 때는 이전 프로세스가 끝났는지 확인한다
+- Play 시작 직후 Game 화면 밖에 있던 마우스의 움직임이 시점 회전으로 들어갈 수 있음 (ADR-572). 조작감 확인 때 처리 결정
 - 템플릿 `Assets/InputSystem_Actions.inputactions`: 게임 입력은 `PastFutureControls`로 옮겼다. 템플릿 파일은 아직 project-wide actions로 등록되어 있다. 삭제하거나 등록을 해제할지 미정 (ADR-567, ADR-572)
 - 점프·앉기·게임패드·리바인딩 여부 미정 (원문에 근거 없음, ADR-572)
 - 2026-11-26 Editor.log에 `Unexpected transport error from import worker 1 (possible crash)` 1건. 이후 컴파일과 import는 정상. 원인 미확인, 조치하지 않음
