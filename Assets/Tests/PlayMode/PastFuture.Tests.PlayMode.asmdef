@@ -1,7 +1,7 @@
 {
     "name": "PastFuture.Tests.PlayMode",
     "rootNamespace": "PastFuture.Tests.PlayMode",
-    "references": ["UnityEngine.TestRunner", "PastFuture.Application", "PastFuture.UnityAdapters", "PastFuture.Presentation", "PastFuture.Bootstrap"],
+    "references": ["UnityEngine.TestRunner", "Unity.InputSystem", "Unity.InputSystem.TestFramework", "PastFuture.Application", "PastFuture.UnityAdapters", "PastFuture.Presentation", "PastFuture.Bootstrap"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
