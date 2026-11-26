@@ -30,8 +30,16 @@ namespace PastFuture.Presentation.Player
         private UnityEngine.InputSystem.InputAction _captureCursor;
         private FirstPersonLookState _lookState;
         private bool _ready;
+        private bool _inputCaptured;
 
         public FirstPersonLookState LookState => _lookState;
+
+        /// <summary>
+        /// Whether gameplay input (move, look, sprint) is applied. Owned by the rig rather than read back
+        /// from <see cref="UnityEngine.Cursor.lockState"/>: the OS lock may not take effect (no window,
+        /// Game view not focused yet) and must not silently swallow input.
+        /// </summary>
+        public bool IsInputCaptured => _inputCaptured;
 
         private void Awake()
         {
@@ -89,7 +97,7 @@ namespace PastFuture.Presentation.Player
                 SetCursorCaptured(true);
             }
 
-            var captured = UnityEngine.Cursor.lockState == UnityEngine.CursorLockMode.Locked;
+            var captured = _inputCaptured;
             if (captured)
             {
                 _lookState.Apply(_look.ReadValue<UnityEngine.Vector2>(), look);
@@ -106,8 +114,18 @@ namespace PastFuture.Presentation.Player
             cameraPivot.localRotation = UnityEngine.Quaternion.Euler(_lookState.Pitch, 0f, 0f);
         }
 
-        private static void SetCursorCaptured(bool captured)
+        private void OnApplicationFocus(bool hasFocus)
         {
+            // Losing focus releases input; regaining it waits for a click, like Esc.
+            if (_ready && isActiveAndEnabled && !hasFocus)
+            {
+                SetCursorCaptured(false);
+            }
+        }
+
+        private void SetCursorCaptured(bool captured)
+        {
+            _inputCaptured = captured;
             UnityEngine.Cursor.lockState = captured ? UnityEngine.CursorLockMode.Locked : UnityEngine.CursorLockMode.None;
             UnityEngine.Cursor.visible = !captured;
         }
