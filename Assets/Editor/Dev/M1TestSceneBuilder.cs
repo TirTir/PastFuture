@@ -1,5 +1,6 @@
 using System;
 using PastFuture.Presentation.Player;
+using PastFuture.UnityAdapters.Entities;
 using PastFuture.UnityAdapters.Player;
 
 namespace PastFuture.Editor.Dev
@@ -19,6 +20,14 @@ namespace PastFuture.Editor.Dev
 
         /// <summary>Player spawn: room centre-south, facing the doorway (+Z).</summary>
         public static readonly UnityEngine.Vector3 PlayerSpawn = new UnityEngine.Vector3(0f, 0.05f, -1.5f);
+
+        /// <summary>
+        /// Test-only entity IDs (ADR-573): not content IDs. 900000+ is kept for generated test scenes
+        /// until the M2 IdAllocator defines the content/dynamic ranges (ADR-018).
+        /// </summary>
+        public const long PlayerEntityId = 900001;
+
+        public const long TableEntityId = 900101;
 
         public const float WallHeight = 2.8f;
         public const float WallThickness = 0.2f;
@@ -95,7 +104,8 @@ namespace PastFuture.Editor.Dev
             // Movement checks.
             Box(root, "Obstacle_LowStep_0.2m", new UnityEngine.Vector3(1.5f, 0.1f, -1.5f), new UnityEngine.Vector3(1f, 0.2f, 1f));
             Box(root, "Obstacle_TallBlock_0.5m", new UnityEngine.Vector3(1.5f, 0.25f, 1f), new UnityEngine.Vector3(1f, 0.5f, 1f));
-            Box(root, "Prop_Table", new UnityEngine.Vector3(-1.5f, 0.375f, -1.5f), new UnityEngine.Vector3(1.2f, 0.75f, 0.6f));
+            var table = Box(root, "Prop_Table", new UnityEngine.Vector3(-1.5f, 0.375f, -1.5f), new UnityEngine.Vector3(1.2f, 0.75f, 0.6f));
+            AddEntityView(table, TableEntityId);
         }
 
         private static void CreatePlayer(UnityEngine.InputSystem.InputActionAsset controls)
@@ -113,6 +123,7 @@ namespace PastFuture.Editor.Dev
             controller.minMoveDistance = 0f; // PlayerMotor also enforces this.
 
             var motor = player.AddComponent<PlayerMotor>();
+            AddEntityView(player, PlayerEntityId);
 
             var pivot = new UnityEngine.GameObject("CameraPivot").transform;
             pivot.SetParent(player.transform, false);
@@ -141,7 +152,15 @@ namespace PastFuture.Editor.Dev
             }
         }
 
-        private static void Box(UnityEngine.Transform parent, string name, UnityEngine.Vector3 position, UnityEngine.Vector3 size)
+        private static void AddEntityView(UnityEngine.GameObject target, long entityId)
+        {
+            var view = target.AddComponent<EntityView>();
+            var serialized = new UnityEditor.SerializedObject(view);
+            serialized.FindProperty("entityId").longValue = entityId;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static UnityEngine.GameObject Box(UnityEngine.Transform parent, string name, UnityEngine.Vector3 position, UnityEngine.Vector3 size)
         {
             var box = UnityEngine.GameObject.CreatePrimitive(UnityEngine.PrimitiveType.Cube);
             box.name = name;
@@ -149,6 +168,7 @@ namespace PastFuture.Editor.Dev
             box.transform.localPosition = position;
             box.transform.localScale = size;
             box.isStatic = true;
+            return box;
         }
     }
 }

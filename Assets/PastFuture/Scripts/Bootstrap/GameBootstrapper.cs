@@ -43,6 +43,7 @@ namespace PastFuture.Bootstrap
             s_active = this;
             DontDestroyOnLoad(gameObject);
             _root = new CompositionRoot();
+            _root.StartSceneBindings();
             Debug.Log($"{LogPrefix} Composition root created ({_root.ApplicationScope.Kind} scope).", this);
         }
 
