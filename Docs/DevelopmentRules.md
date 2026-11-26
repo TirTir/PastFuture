@@ -112,6 +112,15 @@ dotnet test /Users/yujin/Projects/PastFuture/Tools/Headless/PastFuture.Tests.Hea
 - 같은 rig 안의 컴포넌트와 설정 에셋(입력 액션 등)은 serialized 필드로 연결할 수 있다. 수명 있는 서비스는 7절에 따라 `Initialize(...)`로 받는다.
 - 이동·카메라는 실제 시간(`Time.deltaTime`) 기준이다. 게임 시계(20배)를 곱하지 않는다.
 
+## 7.2 Entity binding (ADR-573)
+
+- 월드 개체를 나타내는 GameObject에는 `EntityView`를 붙이고 `entityId`를 지정한다. 한 Entity에는 표현이 하나만 바인딩되고, 중복은 거부된다(UNITY_T024).
+- 바인딩은 `SceneEntityBinder`가 씬을 로드할 때 한다. `EntityView`가 스스로 등록부를 찾지 않는다.
+- 표현 쪽 콜백(물리·상호작용)은 `EntityBinding` token을 함께 전달하고, 받는 쪽은 `IsCurrent`로 확인한다. 이전 token은 무시한다(UNITY_T023).
+- `EntityView`가 파괴되는 것은 바인딩 해제일 뿐 Entity의 사망이나 삭제가 아니다.
+- 테스트 씬의 Entity ID는 900000번대를 쓴다. 콘텐츠 ID 범위는 M2에서 정한다.
+- 입력 액션 에셋은 rig마다 `Instantiate`한 복사본을 쓴다. 공유 에셋을 직접 켜지 않는다.
+
 ## 8. Windows 빌드 (ADR-571)
 
 - Mac에서는 Windows **Mono** Development Build만 만든다. Windows IL2CPP는 Windows 호스트가 필요하다.

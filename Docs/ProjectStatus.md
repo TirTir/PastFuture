@@ -59,6 +59,10 @@
 | Handover ID 없음 (headless) | `EngineFreeAssemblies_LoadWithoutUnity_AndReferenceNoUnityAssembly` | Passed | 2026-11-25 | a450feb |
 | Handover ID 없음 (headless) | `LifetimeScope_RunsHeadless_DisposesChildThenItemsAndCancels` | Passed | 2026-11-25 | a450feb |
 | UNITY_T003 | `UNITY_T003_BootstrapSceneLoadedTwice_KeepsSingleCompositionRoot` (PlayMode) | Passed | 2026-11-26 | c19ebf3 |
+| UNITY_T024 | `UNITY_T024_DuplicateEntityBinding_IsRejected_AndFirstKeepsAuthority` (EditMode), `UNITY_T024_DuplicateEntityView_IsRejected_AndOriginalKeepsAuthority` (PlayMode) | Passed | 2026-11-26 | 010a2f5 |
+| UNITY_T023 | `UNITY_T023_SceneReload_OldBindingTokens_AreRejected` (PlayMode, binding token 수준) | Passed | 2026-11-26 | 010a2f5 |
+| Handover ID 없음 | `EntityPresentationRegistryTests` 7개 (EntityId, 양방향 조회, 표현 중복, 잘못된 ID, 이전 token, UnbindAll, 기본 token) | Passed | 2026-11-26 | 010a2f5 |
+| Handover ID 없음 (PlayMode) | `EntityBindingPlayModeTests` 3개 (테스트 방 바인딩, 파괴 시 해제, Bootstrap 경유 바인딩) | Passed | 2026-11-26 | 010a2f5 |
 | UNITY_T049 | Windows Development Build → 실제 실행/Profiler | NotRun (빌드만 성공, Windows 장비 없음, 이월) | - | - |
 | UNITY_T008 | `UNITY_T008_BootstrapRestartedInSameDomain_CreatesFreshRootAndDisposesPrevious` (PlayMode, 같은 도메인 재시작 범위) | Passed | 2026-11-26 | c19ebf3 |
 
@@ -67,7 +71,7 @@
 - `HaveNoCycles`의 실패 사례는 실행하지 못했다 (Unity가 순환 asmdef를 컴파일 단계에서 거부).
 - headless: 2026-11-25 `dotnet test` ([DevelopmentRules.md](DevelopmentRules.md) 5절) 2/2 Passed, exit 0, 빌드 경고 0건.
 - UNITY_T003/T008: 2026-11-26 PlayMode 자동 테스트 2/2 Passed (ADR-565). UNITY_T008은 Domain Reload를 끈 Play 반복과 같은 조건(같은 도메인에서 재시작)만 다룬다. Editor Play/Stop 버튼 반복은 자동화하지 않았다. 음성 확인(중복 검사·해제 제거)에서 둘 다 Failed, 되돌린 뒤 Passed.
-- 최근 실행: 2026-11-26 scratchpad 사본에서 batchmode EditMode 26/26 Passed. PlayMode 23개 중 21 Passed, 2 Skipped. Skipped 2개는 `testables`로 포함된 Input System 패키지 자체 테스트로, 패키지가 Ignore로 표시한 것이다. exit 0, 컴파일 경고·오류 0건. headless 2/2 Passed. 원래 프로젝트의 Editor가 열려 있어 사본에서 실행했다.
+- 최근 실행: 2026-11-26 scratchpad 사본에서 batchmode EditMode 34/34 Passed. PlayMode 28개 중 26 Passed, 2 Skipped. Skipped 2개는 `testables`로 포함된 Input System 패키지 자체 테스트로, 패키지가 Ignore로 표시한 것이다. exit 0, 컴파일 경고·오류 0건. headless 2/2 Passed. 원래 프로젝트의 Editor가 열려 있어 사본에서 실행했다.
 - 원래 프로젝트 Editor: 2026-11-26 새 코드 컴파일(오류·경고 0)과 `M1_TestRoom` Play(콘솔 오류 없음)를 확인했다 (ADR-572).
 - 위 표에 없는 Handover의 모든 Test ID는 NotRun이다.
 
@@ -77,7 +81,7 @@
 |---|---|---|
 | 1. PlayMode 테스트 어셈블리, UNITY_T003/T008 | 완료 (c19ebf3) | ADR-565. PlayMode 2/2, EditMode 14/14 Passed (2026-11-26, 사본) |
 | 2. 방·복도 테스트 씬, 입력, `CharacterController` 이동, 카메라 | 자동 테스트 완료 (9282b9e, 입력 활성 상태 수정 ab66634, 입력 연결 테스트 15c6b8c), 조작감 NotRun | ADR-572. EditMode 26/26, PlayMode 12/12 Passed (2026-11-26, 사본). Editor에서 직접 플레이해 보는 확인은 사용자 몫 |
-| 3. Entity ID ↔ GameObject 연결 등록부 (UNITY_T024) | NotStarted | - |
+| 3. Entity ID ↔ GameObject 연결 등록부 (UNITY_T024) | 완료 (010a2f5) | ADR-573. EditMode 34/34, PlayMode 26 Passed·2 Skipped(패키지 테스트) (2026-11-26, 사본). 음성 확인 포함 |
 | 4. 물건 줍기·놓기 Command | NotStarted | 착수 전 Domain 저장소 범위 확인 필요 (WorldState는 M2) |
 | 5. 물리 결과(`PhysicsObservation`) 제출 | NotStarted | - |
 | 6. 시간 배율 초기 측정 | NotStarted | - |
@@ -102,6 +106,9 @@
 | fc3ce9c | M0 종료, ADR-572, M1 1·2단계 기록 |
 | ab66634 | rig 입력 활성 상태를 직접 관리 (커서 잠금 의존 제거) |
 | 15c6b8c | 입력 연결 PlayMode 테스트 (`InputTestFixture`, manifest `testables`) |
+| 2f9952d | 입력 테스트·rig 수정·Editor 확인 기록 |
+| ab46999 | rig가 입력 에셋 복사본을 사용 (공유 에셋 상태 잔존 수정) |
+| 010a2f5 | M1: EntityId, 연결 등록부, EntityView·SceneEntityBinder (ADR-573) |
 
 ## 6. 이번 단계에서 정한 사항
 
@@ -110,7 +117,8 @@ ADR-563~571 ([ADR/README.md](ADR/README.md)).
 ## 7. 미결정 / 다음 작업
 
 - 이월: 실제 Windows 장비에서 빌드 실행 확인 (UNITY_T049). Windows 장비 없음 (2026-11-26). 장비를 확보하면 M1 이후 어느 시점에든 실행한다
-- 다음 작업: M1 3단계 (4절 표). M1_TestRoom 직접 플레이로 조작감 확인 (사용자)
+- 다음 작업: M1 4단계 물건 줍기·놓기 (4절 표). 착수 전에 두 가지를 정한다: Domain 저장소 범위(WorldState는 M2), Bootstrap 없이 테스트 방을 Play할 때 바인딩을 어떻게 할지(Bootstrap 자동 로드 여부). M1_TestRoom 직접 플레이로 조작감 확인 (사용자)
+- 테스트 방 Entity ID 900000번대는 테스트 전용 임시 범위. 고정/동적 ID 범위는 M2 IdAllocator에서 결정 (ADR-018, ADR-573)
 - 2026-11-26 전날 실행한 Unity Editor 프로세스가 "Hold on..." 상태로 멈춘 채 남아 있었다. 사용자가 새로 연 Editor와 같은 프로젝트를 동시에 열고 있었고, 사용자 승인으로 종료했다. Editor를 다시 켤 때는 이전 프로세스가 끝났는지 확인한다
 - Play 시작 직후 Game 화면 밖에 있던 마우스의 움직임이 시점 회전으로 들어갈 수 있음 (ADR-572). 조작감 확인 때 처리 결정
 - 템플릿 `Assets/InputSystem_Actions.inputactions`: 게임 입력은 `PastFutureControls`로 옮겼다. 템플릿 파일은 아직 project-wide actions로 등록되어 있다. 삭제하거나 등록을 해제할지 미정 (ADR-567, ADR-572)

@@ -15,3 +15,4 @@
 | [ADR-570](ADR-570.md) | 순수 .NET headless smoke 프로젝트 (Tools/Headless) | Validated | 2026-11-25 |
 | [ADR-571](ADR-571.md) | Mac에서 Windows Development Build 경로 (M0) | Accepted | 2026-11-25 |
 | [ADR-572](ADR-572.md) | M1 1인칭 이동·카메라·입력과 테스트 방 | Validated (조작감 미확인) | 2026-11-26 |
+| [ADR-573](ADR-573.md) | Entity ID와 GameObject 연결 등록부 (M1) | Validated | 2026-11-26 |
