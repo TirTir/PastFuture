@@ -21,6 +21,9 @@ namespace PastFuture.Bootstrap
 
         private CompositionRoot _root;
 
+        /// <summary>The composition root this bootstrapper owns; null on a destroyed duplicate. Test access only.</summary>
+        internal CompositionRoot Root => _root;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()
         {

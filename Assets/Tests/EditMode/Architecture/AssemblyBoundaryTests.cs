@@ -25,6 +25,7 @@ namespace PastFuture.Tests.EditMode.Architecture
         private const string Bootstrap = "PastFuture.Bootstrap";
         private const string EditorAssembly = "PastFuture.Editor";
         private const string EditModeTests = "PastFuture.Tests.EditMode";
+        private const string PlayModeTests = "PastFuture.Tests.PlayMode";
 
         private static readonly string[] EngineFreeAssemblies = { Domain, Application };
 
@@ -48,6 +49,7 @@ namespace PastFuture.Tests.EditMode.Architecture
                 { Bootstrap, new HashSet<string> { Domain, Application, Infrastructure, UnityAdapters, Presentation } },
                 { EditorAssembly, new HashSet<string>(RuntimeAssemblies) },
                 { EditModeTests, new HashSet<string>(RuntimeAssemblies) },
+                { PlayModeTests, new HashSet<string>(RuntimeAssemblies) },
             };
 
         [Serializable]

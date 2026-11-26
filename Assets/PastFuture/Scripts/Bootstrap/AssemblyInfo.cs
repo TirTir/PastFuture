@@ -4,3 +4,4 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("PastFuture.Tests.EditMode")]
+[assembly: InternalsVisibleTo("PastFuture.Tests.PlayMode")]
